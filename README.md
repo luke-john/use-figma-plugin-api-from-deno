@@ -1,5 +1,7 @@
 # Figma plugin for controlling figma from deno
 
+Note: This is being used/created for a personal project and is unlikely to be suitable for production use cases.
+
 Demo gifs.
 
 **Demo One.**
