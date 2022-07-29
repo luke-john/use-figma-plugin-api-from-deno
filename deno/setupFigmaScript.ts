@@ -1,5 +1,12 @@
-export function setupFigmaScript<FigmaScriptResult>(
-  { figmaScript }: { figmaScript: () => FigmaScriptResult },
+export function setupFigmaScript<
+  FigmaScriptParams extends any[],
+  FigmaScriptResult,
+>(
+  { figmaScript }: {
+    figmaScript: (
+      ...params: FigmaScriptParams
+    ) => FigmaScriptResult;
+  },
 ) {
   const error = new Error();
 

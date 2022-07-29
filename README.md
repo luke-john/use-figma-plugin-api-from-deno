@@ -2,11 +2,14 @@
 
 Demo gifs.
 
-**Demo One.** Inserting into the current page and returning some data from the page back to deno.
+**Demo One.**
+
+Inserting into the current page, updating the current page name with some data from deno and returning some data from the figma page back to deno.
 
 <img alt="gif showing the tool inserting rectangles into the current figma page and then getting all the text content and logging it in deno" src='docs/example.gif' />
 
 **Demo two.** Showing how you can use the [debugger](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/debugger) statement to inspect the script inside figma.
+
 <img alt="gif showing how you can use the debugger to inspect the script inside figma" src='docs/example-debugger.gif' />
 
 ## Installation instructions
@@ -40,8 +43,7 @@ import chroma from "https://esm.sh/chroma-js@2.4.2?no-dts";
 import { setupFigmaScript } from "https://raw.githubusercontent.com/luke-john/use-figma-plugin-api-from-deno/master/deno/setupFigmaScript.ts";
 
 export default setupFigmaScript({
-  // deno-lint-ignore require-await
-  async figmaScript() {
+  figmaScript({ newPageTitle }: { newPageTitle: string }) {
     // This plugin creates 5 rectangles on the screen.
     const numberOfRectangles = 5;
 
@@ -78,21 +80,27 @@ export default setupFigmaScript({
       return false;
     });
 
+    figma.currentPage.name = newPageTitle;
+
     return { pageText };
   },
 });
 ```
 
-Create a "control" script.
+Create a "control" script
+
+note: you will need to grap the file key from the plugin which will have this example code in its ui when opened.
 
 ```ts
 import { getFigmaPluginConnection } from "https://raw.githubusercontent.com/luke-john/use-figma-plugin-api-from-deno/master/deno/figma-deno.ts";
 
 const figmaPluginConnection = await getFigmaPluginConnection({
-  fileKey: "VFPhi1erb9StHrWtazuSFS",
+  fileKey: "your file key -- get this from the plugin ui",
 });
 
-const result = await figmaPluginConnection.run(import("./figma-script.ts"));
+const result = await figmaPluginConnection.run(import("./figma-script.ts"), {
+  newPageTitle: "cool page",
+});
 console.log("completed", result);
 
 figmaPluginConnection.close();

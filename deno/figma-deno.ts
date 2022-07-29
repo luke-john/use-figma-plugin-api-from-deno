@@ -3,6 +3,16 @@ import { createCache } from "https://deno.land/x/deno_cache@0.4.1/mod.ts";
 
 import { getConnection } from "./getConnection.ts";
 
+type SetupFigmaScriptImportun<
+  FigmaScriptResult,
+  FigmaScriptParams extends any[],
+> = Promise<{
+  default: {
+    figmaScript: (...params: FigmaScriptParams) => FigmaScriptResult;
+    fileName: string;
+  };
+}>;
+
 export async function getFigmaPluginConnection(options: {
   fileKey: string;
   /**
@@ -31,10 +41,12 @@ class FigmaPluginConnection {
     this.#connection = options.connection;
   }
 
-  async run<FigmaScriptResult>(
-    setupFigmaScriptImport: Promise<{
-      default: { figmaScript: () => FigmaScriptResult; fileName: string };
-    }>,
+  async run<FigmaScriptResult, FigmaScriptParams extends any[]>(
+    setupFigmaScriptImport: SetupFigmaScriptImportun<
+      FigmaScriptResult,
+      FigmaScriptParams
+    >,
+    ...figmaScriptParams: FigmaScriptParams
   ): Promise<FigmaScriptResult> {
     const { fileName } = (await setupFigmaScriptImport)["default"];
     console.log("starting run for file", fileName);
@@ -51,13 +63,17 @@ class FigmaPluginConnection {
             const url = new URL(fileName, import.meta.url);
             const fakeUrl = new URL("./fake-padding.ts", import.meta.url);
 
+            const stringifiedFigmaScriptParams = JSON.stringify(
+              figmaScriptParams,
+            );
+
             const content = `
               import { fake } from '${fakeUrl.href}';
               import setupFigmaScript from '${url.href}';
               
               async function runInFigma() {
                 if (false === true) { fake() };
-                  const figmaScriptResult = await setupFigmaScript.figmaScript();
+                  const figmaScriptResult = await setupFigmaScript.figmaScript(...JSON.parse(\`${stringifiedFigmaScriptParams}\`));
                   
                   sendBackToDeno(figmaScriptResult);
                 }

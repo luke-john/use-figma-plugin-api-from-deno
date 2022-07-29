@@ -4,7 +4,7 @@ import chroma from "https://esm.sh/chroma-js@2.4.2?no-dts";
 import { setupFigmaScript } from "../setupFigmaScript.ts";
 
 export default setupFigmaScript({
-  figmaScript() {
+  figmaScript({ newPageTitle }: { newPageTitle: string }) {
     // This plugin creates 5 rectangles on the screen.
     const numberOfRectangles = 5;
 
@@ -33,6 +33,8 @@ export default setupFigmaScript({
       return false;
     });
     debugger;
+
+    figma.currentPage.name = newPageTitle;
 
     return { pageText };
   },

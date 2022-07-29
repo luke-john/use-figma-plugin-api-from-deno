@@ -24,7 +24,30 @@ function getHtml() {
 
 </script>
 <p>To use the debugger -- set Figma to "Use developer VM" and then open the developer tools: <kbd>Command</kbd> + <kbd>Option</kbd> + <kbd>i</kbd></p>
-<p>See <a href="https://github.com/luke-john/use-figma-plugin-api-from-deno">https://github.com/luke-john/use-figma-plugin-api-from-deno</a> for usage instructions.</p>
+<p>See <a href="https://github.com/luke-john/use-figma-plugin-api-from-deno">https://github.com/luke-john/use-figma-plugin-api-from-deno</a> for more usage instructions.</p>
+<pre><code>
+// deno control file
+import { getFigmaPluginConnection } from "https://raw.githubusercontent.com/luke-john/use-figma-plugin-api-from-deno/master/deno/figma-deno.ts";
+
+const figmaPluginConnection = await getFigmaPluginConnection({
+  fileKey: "${figma.fileKey}",
+});
+const figmaFileName = await figmaPluginConnection.run(\import\("./get-figma-file-name.ts"));
+</code></pre>
+<pre><code>
+// ./get-figma-file-name.ts
+// code that runs in figma (but returns to deno)
+/// <reference types="https://raw.githubusercontent.com/figma/plugin-typings/master/index.d.ts" />
+import chroma from "https://esm.sh/chroma-js@2.4.2?no-dts";
+
+import { setupFigmaScript } from "https://raw.githubusercontent.com/luke-john/use-figma-plugin-api-from-deno/master/deno/setupFigmaScript.ts";
+
+export default setupFigmaScript({
+  // deno-lint-ignore require-await
+  async figmaScript() {
+    return figma.currentPage.name
+  }
+</code></pre>
 `;
 }
 
