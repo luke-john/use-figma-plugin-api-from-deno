@@ -105,3 +105,9 @@ console.log("completed", result);
 
 figmaPluginConnection.close();
 ```
+
+Run the script
+
+`deno run --allow-all control-script.ts`
+
+note: to check what permissions it's requiring -- review running without the --allow-all flag. Currently it requests some "unexpected" permissions due to its use of [deno_emit](https://github.com/denoland/deno_emit) -- which asks for env access to DENO_DIR, DENO_AUTH_TOKENS and HOME_DIR.
