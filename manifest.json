@@ -1,0 +1,9 @@
+{
+  "name": "use-figma-plugin-api-from-deno",
+  "id": "1132570350638861267",
+  "api": "1.0.0",
+  "main": "main/build/code.js",
+  "editorType": ["figma", "figjam"],
+  "enablePrivatePluginApi": true,
+  "ui": "ui/ui.html"
+}
